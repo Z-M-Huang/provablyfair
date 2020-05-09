@@ -1,0 +1,2 @@
+# provablyfair
+Provably fair generator
