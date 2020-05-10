@@ -19,7 +19,7 @@ type Client struct {
 	mux sync.Mutex
 }
 
-//Generate generate new number < 1000000. Returns (new number, serverSeed, nounce, error)
+//Generate generate new number < 1000000. Returns (new number, serverSeed, nonce, error)
 func (c *Client) Generate(clientSeed []byte) (uint64, []byte, uint64, error) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
