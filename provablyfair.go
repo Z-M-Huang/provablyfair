@@ -19,8 +19,8 @@ type Client struct {
 	mux sync.Mutex
 }
 
-//Generate generate new number < 1000000. Returns (new number, serverSeed, nonce, error)
-func (c *Client) Generate(clientSeed []byte) (uint64, []byte, uint64, error) {
+//Generate generate new number between 0 and 100. Returns (new number, serverSeed, nonce, error)
+func (c *Client) Generate(clientSeed []byte) (float64, []byte, uint64, error) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
@@ -63,11 +63,11 @@ func (c *Client) Generate(clientSeed []byte) (uint64, []byte, uint64, error) {
 	}
 
 	// Normalize the number to [0,100]
-	return randNum, c.ServerSeed, c.Nonce, nil
+	return float64(randNum%10000) / 100, c.ServerSeed, c.Nonce, nil
 }
 
 //GenerateFromString generate new number from hex string
-func (c *Client) GenerateFromString(clientSeed string) (uint64, []byte, uint64, error) {
+func (c *Client) GenerateFromString(clientSeed string) (float64, []byte, uint64, error) {
 	seed, err := hex.DecodeString(clientSeed)
 	if err != nil {
 		return 0, nil, 0, err
@@ -92,7 +92,7 @@ func (c *Client) getHMACString(clientSeed []byte) []byte {
 }
 
 // Verify takes a state and checks that the supplied number was fairly generated
-func Verify(clientSeed []byte, serverSeed []byte, nonce uint64, randNum uint64) (bool, error) {
+func Verify(clientSeed []byte, serverSeed []byte, nonce uint64, randNum float64) (bool, error) {
 	client := &Client{
 		ServerSeed: serverSeed,
 		Nonce:      nonce,
@@ -107,7 +107,7 @@ func Verify(clientSeed []byte, serverSeed []byte, nonce uint64, randNum uint64) 
 }
 
 //VerifyFromString verify from string clientSeed and serverSeed
-func VerifyFromString(clientSeed, serverSeed string, nonce uint64, randNum uint64) (bool, error) {
+func VerifyFromString(clientSeed, serverSeed string, nonce uint64, randNum float64) (bool, error) {
 	clientSeedBytes, err := hex.DecodeString(clientSeed)
 	if err != nil {
 		return false, err
