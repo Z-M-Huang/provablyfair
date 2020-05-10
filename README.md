@@ -15,7 +15,7 @@ This is changed based on private usage.
 		ServerSeed: serverSeed,
 	}
 
-  clientSeed, err = provablyfair.GenerateNewSeed(32)
+  clientSeed, err := provablyfair.GenerateNewSeed(32)
 	if err != nil {
 		panic(err)
 	}

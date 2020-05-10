@@ -32,7 +32,6 @@ func (c *Client) Generate(clientSeed []byte) (float64, []byte, uint64, error) {
 		c.ServerSeed = newSeed
 		c.Nonce = 0
 	}
-	c.Nonce++
 	hmacBytes := c.getHMACString(clientSeed)
 	hmacStr := string(hmacBytes)
 
@@ -62,8 +61,9 @@ func (c *Client) Generate(clientSeed []byte) (float64, []byte, uint64, error) {
 		return 0, nil, 0, errors.New("invalid nonce")
 	}
 
+	c.Nonce++
 	// Normalize the number to [0,100]
-	return float64(randNum%10000) / 100, c.ServerSeed, c.Nonce, nil
+	return float64(randNum%10000) / 100, c.ServerSeed, c.Nonce - 1, nil
 }
 
 //GenerateFromString generate new number from hex string
